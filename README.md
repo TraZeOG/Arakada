@@ -1,6 +1,6 @@
 # What is Arakada?
-Arakada regroups all the "arcade" games I've made with the goal of finishing them in one day
-So all those games were made in around 2 to 4 hours including textures *(buttons, enemies, background etc...)*
+Arakada regroups all the "arcade" games I've made with the goal of finishing them in one day.
+So all those games were made in around 3 to 5 hours including textures *(buttons, enemies, background etc...)*
 
 Currently the games are:
  - **Arakada 1**: *the fruit game*
