@@ -1,5 +1,6 @@
 import pygame
 import pickle
+import webbrowser
 from games.Arakada1.Arakada1 import arakada1_main
 from games.Arakada2.Arakada2 import arakada2_main
 
@@ -18,6 +19,7 @@ clr_white = (255,255,255)
 clr_play = (235,212,169)
 font_lilitaone_80 = pygame.font.Font("games/Arakada1/fonts/LilitaOne-Regular.ttf", 100)
 font_lilitaone_50 = pygame.font.Font("games/Arakada1/fonts/LilitaOne-Regular.ttf", 50)
+font_lilitaone_30 = pygame.font.Font("games/Arakada1/fonts/LilitaOne-Regular.ttf", 30)
 menu_principal = True
 menu_games = False
 
@@ -53,6 +55,7 @@ bouton_exit = Bouton(screen_width - 105, 15, 90, 50, pygame.image.load("sprites/
 bouton_play1 = Bouton(screen_width // 2 - 270 - 260, screen_height // 2 + 60, 260, 100, pygame.image.load("sprites/img_bouton_play.webp"))
 bouton_play2 = Bouton(screen_width // 2 + 270, screen_height // 2 + 60, 260, 100, pygame.image.load("sprites/img_bouton_play.webp"))
 bouton_start = Bouton(screen_width // 2 - 130, screen_height // 2 - 50, 260, 100, pygame.image.load("sprites/img_bouton_start.webp"))
+bouton_plus = Bouton(screen_width - 130, screen_height - 148, 100, 100, pygame.image.load("sprites/img_bouton_plus.webp"))
 
 run=True
 while run:
@@ -72,6 +75,7 @@ while run:
             menu_principal = False
             menu_games = True
         draw_text("Arakada games", font_lilitaone_80, clr_white, 420, screen_height // 2 - 320)
+        draw_text("Play the games:", font_lilitaone_50, clr_black, screen_width // 2, screen_height // 2 - 100)
 
 
     if menu_games:
@@ -92,6 +96,11 @@ while run:
         if bouton_exit.draw():
             menu_games = False
             menu_principal = True
+
+    if bouton_plus.draw():
+        webbrowser.open("D:\Le reste\Code\Html and CSS\Crave's Hub\crave-main.html")
+    draw_text("Voir le site web", font_lilitaone_30, clr_black, screen_width - 120, screen_height - 30)
+    draw_text("© 2024 TraZe", font_lilitaone_30, clr_black, 100, screen_height - 30)
 
     pygame.display.update()
 

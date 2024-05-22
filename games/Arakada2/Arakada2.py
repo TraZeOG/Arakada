@@ -84,10 +84,11 @@ def arakada2_main():
             return reset_click
 
 
-    bouton_exit = Bouton(old_screen_width - 105, 15, 90, 50, pygame.image.load("games/Arakada2/sprites/img_bouton_exit.webp"))
+    bouton_back = Bouton(screen_width - defposx - 140, 15 - defposy, 125, 50, pygame.image.load("games/Arakada2/sprites/img_bouton_back.webp"))
+    bouton_menu = Bouton(screen_width - defposx - 140, 15 - defposy, 125, 50, pygame.image.load("games/Arakada2/sprites/img_bouton_menu.webp"))
     bouton_start = Bouton(old_screen_width // 2 - 130, old_screen_height // 2 - 110, 260, 100, pygame.image.load("games/Arakada2/sprites/img_bouton_start.webp"))
     bouton_restart = Bouton(old_screen_width // 2 - 130, old_screen_height // 2 + 110, 260, 100, pygame.image.load("games/Arakada2/sprites/img_bouton_restart.webp"))
-    bouton_menu = Bouton(old_screen_width // 2 - 130, old_screen_height // 2 + 240, 260, 100, pygame.image.load("games/Arakada2/sprites/img_bouton_menu.webp"))
+    bouton_menu_dos = Bouton(old_screen_width // 2 - 130, old_screen_height // 2 + 240, 260, 100, pygame.image.load("games/Arakada2/sprites/img_bouton_menu.webp"))
     bouton_resume = Bouton(old_screen_width // 2 - 156, old_screen_height // 2 - 60, 312, 142, pygame.image.load("games/Arakada2/sprites/img_bouton_resume.webp"))
 
 
@@ -282,6 +283,7 @@ def arakada2_main():
                 run = False
 
         clock.tick(fps)
+
         if menu_principal == True:
             screen.fill(clr_wheat)
             draw_text("Arakada n°2", font_lilitaone_70, clr_black, old_screen_width // 2 - 210, old_screen_height // 2 - 230)
@@ -291,7 +293,7 @@ def arakada2_main():
             if bouton_start.draw():
                 menu_principal = False
                 game_over = 1
-            if bouton_exit.draw():
+            if bouton_menu.draw():
                 save()
                 run = False
         else:
@@ -359,7 +361,7 @@ def arakada2_main():
                 screen.blit(img_background_summary, (defposx + old_screen_width // 2 - 257, defposy + old_screen_height // 2 - 320))
                 if bouton_restart.draw():
                     game_over = 1
-                if bouton_menu.draw():
+                if bouton_menu_dos.draw():
                     menu_principal = True
                 draw_text("Summary :", font_lilitaone_70, clr_black, old_screen_width // 2 - 180, old_screen_height // 2 - 250)
                 draw_text(f"Score: {score}", font_bauhaus_50, clr_black, old_screen_width // 2 - 100, old_screen_height // 2 - 110)
@@ -375,7 +377,10 @@ def arakada2_main():
             if game_over == 2:
                 if bouton_resume.draw():
                     game_over = 0
-                if bouton_menu.draw():
+                if bouton_menu_dos.draw():
                     menu_principal = True
+
+            if bouton_back.draw():
+                menu_principal = True
 
         pygame.display.update()
