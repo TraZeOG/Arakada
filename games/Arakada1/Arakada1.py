@@ -8,9 +8,13 @@ def arakada1_main():
     pygame.display.set_caption("Arakada 1")
     clock = pygame.time.Clock()
     fps = 60
-    screen_height = pygame.display.Info().current_h - 100
-    screen_width = screen_height * 2 // 3
-    screen= pygame.display.set_mode((screen_width, screen_height))
+    old_screen_height = pygame.display.Info().current_h
+    old_screen_width = old_screen_height * 2 // 3
+    screen_width, screen_height = pygame.display.Info().current_w, pygame.display.Info().current_h
+    screen_size = (screen_width, screen_height) 
+    screen= pygame.display.set_mode((0,0),pygame.FULLSCREEN)
+    defposy = 0
+    defposx = (screen_width - old_screen_width) // 2
     clr_wheat = (179,202,245)
     clr_black = (0,0,0)
     clr_play = (235,212,169)
@@ -34,7 +38,7 @@ def arakada1_main():
     img_background_play = pygame.image.load("games/Arakada1/sprites/img_background_play.webp")
     img_coeur_on = pygame.image.load("games/Arakada1/sprites/img_coeur_on.webp")
     img_background_area = pygame.image.load("games/Arakada1/sprites/img_background_area.webp")
-    img_background_area = pygame.transform.scale(img_background_area, (screen_width, 2))
+    img_background_area = pygame.transform.scale(img_background_area, (old_screen_width, 2))
     img_joueur = pygame.image.load("games/Arakada1/sprites/img_joueur.webp")
     img_citron= pygame.image.load("games/Arakada1/sprites/img_citron.webp")
 
@@ -45,7 +49,7 @@ def arakada1_main():
 
     def draw_text(texte, font, couleur, x, y):
         img = font.render(texte, True, couleur)
-        screen.blit(img, (x, y))
+        screen.blit(img, (defposx + x, defposy + y))
 
     def reset_level():
         grp_amis.empty()
@@ -54,7 +58,7 @@ def arakada1_main():
         score = 0
         frequency = 120
         timer = 0
-        player.reset(screen_width // 2, screen_height - 140)
+        player.reset(old_screen_width // 2, old_screen_height - 140)
         game_over = 0
 
         return game_over, vies, timer, score, frequency
@@ -69,8 +73,8 @@ def arakada1_main():
         def __init__(self, x, y, width, height, image):
             self.image = pygame.transform.scale(image, (width, height))
             self.rect = self.image.get_rect()
-            self.rect.x = x
-            self.rect.y = y
+            self.rect.x = defposx + x
+            self.rect.y = defposy + y
             self.clicked = False
 
         def draw(self):
@@ -86,11 +90,11 @@ def arakada1_main():
             return reset_click
 
 
-    bouton_exit = Bouton(screen_width - 105, 15, 90, 50, pygame.image.load("games/Arakada1/sprites/img_bouton_exit.webp"))
-    bouton_start = Bouton(screen_width // 2 - 130, screen_height // 2 - 110, 260, 100, pygame.image.load("games/Arakada1/sprites/img_bouton_start.webp"))
-    bouton_restart = Bouton(screen_width // 2 - 130, screen_height // 2 + 110, 260, 100, pygame.image.load("games/Arakada1/sprites/img_bouton_restart.webp"))
-    bouton_menu = Bouton(screen_width // 2 - 130, screen_height // 2 + 240, 260, 100, pygame.image.load("games/Arakada1/sprites/img_bouton_menu.webp"))
-    bouton_resume = Bouton(screen_width // 2 - 156, screen_height // 2 - 60, 312, 142, pygame.image.load("games/Arakada1/sprites/img_bouton_resume.webp"))
+    bouton_exit = Bouton(old_screen_width - 105, 15, 90, 50, pygame.image.load("games/Arakada1/sprites/img_bouton_exit.webp"))
+    bouton_start = Bouton(old_screen_width // 2 - 130, old_screen_height // 2 - 110, 260, 100, pygame.image.load("games/Arakada1/sprites/img_bouton_start.webp"))
+    bouton_restart = Bouton(old_screen_width // 2 - 130, old_screen_height // 2 + 110, 260, 100, pygame.image.load("games/Arakada1/sprites/img_bouton_restart.webp"))
+    bouton_menu = Bouton(old_screen_width // 2 - 130, old_screen_height // 2 + 240, 260, 100, pygame.image.load("games/Arakada1/sprites/img_bouton_menu.webp"))
+    bouton_resume = Bouton(old_screen_width // 2 - 156, old_screen_height // 2 - 60, 312, 142, pygame.image.load("games/Arakada1/sprites/img_bouton_resume.webp"))
 
     class Object(pygame.sprite.Sprite):
         def __init__(self, groupe, type):
@@ -112,7 +116,7 @@ def arakada1_main():
                 self.image = pygame.image.load(f"games/Arakada1/sprites/\img_ananas.webp")
                 self.image = pygame.transform.scale(self.image, (90,90))
             self.rect = self.image.get_rect()
-            self.rect.x = random.randint(10, screen_width - 90)
+            self.rect.x = random.randint(defposx + 10, defposx + old_screen_width - 90)
             self.rect.y = 0
 
         def update(self):
@@ -168,11 +172,11 @@ def arakada1_main():
                     self.vitesse_x = 0
             dx += int(self.vitesse_x)
             self.rect.x += dx
-            if player.rect.left < 0:
-                player.rect.left = 0
+            if player.rect.left < defposx:
+                player.rect.left = defposx
                 self.vitesse_x = 0
-            if player.rect.right > screen_width:
-                player.rect.right = screen_width
+            if player.rect.right > old_screen_width + defposx:
+                player.rect.right = old_screen_width + defposx
                 self.vitesse_x = 0
 
 
@@ -193,8 +197,8 @@ def arakada1_main():
             self.image = pygame.image.load(f"games/Arakada1/sprites/\img_joueur.webp")
             self.image = pygame.transform.scale(self.image, (60,20))
             self.rect = self.image.get_rect()
-            self.rect.x = x
-            self.rect.y = y
+            self.rect.x = defposx + x
+            self.rect.y = defposy + y
             self.width = self.image.get_width()
             self.height = self.image.get_height()
             self.vitesse_y = 0
@@ -207,7 +211,7 @@ def arakada1_main():
             self.index = 0
             self.counter = 0
             self.direction = 1
-    player = Joueur(screen_width // 2, screen_height - 140)
+    player = Joueur(old_screen_width // 2, old_screen_height - 140)
 
     run=True
     while run:
@@ -220,10 +224,10 @@ def arakada1_main():
         clock.tick(fps)
         if menu_principal == True:
             screen.fill(clr_wheat)
-            draw_text("Arakada n°1", font_lilitaone_70, clr_black, screen_width // 2 - 210, screen_height // 2 - 230)
-            draw_text("Jeu du fruit", font_lilitaone_70, clr_black, screen_width // 2 - 190, screen_height // 2 + 30)
-            screen.blit(img_citron, (screen_width // 2 - 35, screen_height // 2 + 190))
-            screen.blit(img_joueur, (screen_width // 2 - 90, screen_height // 2 + 300))
+            draw_text("Arakada n°1", font_lilitaone_70, clr_black, old_screen_width // 2 - 210, old_screen_height // 2 - 230)
+            draw_text("Jeu du fruit", font_lilitaone_70, clr_black, old_screen_width // 2 - 190, old_screen_height // 2 + 30)
+            screen.blit(img_citron, (defposx + old_screen_width // 2 - 35, defposy + old_screen_height // 2 + 190))
+            screen.blit(img_joueur, (defposx + old_screen_width // 2 - 90, defposy + old_screen_height // 2 + 300))
             if bouton_start.draw():
                 menu_principal = False
                 game_over = 1
@@ -243,21 +247,23 @@ def arakada1_main():
                 if key[pygame.K_p]:
                     score += 5
                     timer += 5
-                screen.fill(clr_play)
-                screen.blit(img_background_area, (0, screen_height - 132))
+                pygame.draw.rect(screen, clr_play, (defposx, defposy, old_screen_width, old_screen_height))
+                screen.blit(img_background_area, (defposx, defposy + old_screen_height - 132))
                 grp_amis.update()
                 grp_ennemis.update()
                 grp_amis.draw(screen)
                 grp_ennemis.draw(screen)
-                screen.blit(img_background_score, (0,0))
-                draw_text(f"Score: {score}", font_bauhaus_50, clr_black, screen_width // 2 - 160, 20)
+                screen.blit(img_background_score, (defposx, defposy))
+                draw_text(f"Score: {score}", font_bauhaus_50, clr_black, old_screen_width // 2 - 160, 20)
                 draw_text(f"0{timer // 60}:{timer % 60}", font_bauhaus_50, clr_black, 10, 20)
-                draw_text(f"Vitesse: {1 + timer // 10}", font_bauhaus_30, clr_black, screen_width - 150, screen_height - 40)
+                draw_text(f"Vitesse: {1 + timer // 10}", font_bauhaus_30, clr_black, old_screen_width - 150, old_screen_height - 40)
                 for i in range(vies):
-                    screen.blit(img_coeur_on, (screen_width // 2 + 70 + 80 * i, 7))
+                    screen.blit(img_coeur_on, (defposx + old_screen_width // 2 + 70 + 80 * i, defposy + 7))
                 for i in range(3 - vies):
-                    screen.blit(img_coeur_off, (screen_width // 2 + 230 - 80 * i, 7))
+                    screen.blit(img_coeur_off, (defposx + old_screen_width // 2 + 230 - 80 * i, defposy + 7))
                 game_over, score, vies = player.update(game_over, score, vies)
+                pygame.draw.rect(screen, (0,0,0), (defposx, 0, 10, screen_height))
+                pygame.draw.rect(screen, (0,0,0), (defposx + old_screen_width, 0, 10, screen_height))
 
                 n = random.randint(0, frequency)
                 if n == fr11 or n == fr12:
@@ -272,20 +278,20 @@ def arakada1_main():
 
                 if key[pygame.K_ESCAPE]:
                     game_over = 2
-                    screen.blit(img_background_play, (screen_width // 2 - 257, screen_height // 2 - 320))
-                    draw_text("Pause", font_lilitaone_70, clr_black, screen_width // 2 - 100, screen_height // 2 - 180)
+                    screen.blit(img_background_play, (defposx + old_screen_width // 2 - 257, defposy + old_screen_height // 2 - 320))
+                    draw_text("Pause", font_lilitaone_70, clr_black, old_screen_width // 2 - 100, old_screen_height // 2 - 180)
             if game_over == -1:
                 if score > high_score:
                     high_score = score
-                screen.blit(img_background_play, (screen_width // 2 - 257, screen_height // 2 - 320))
+                screen.blit(img_background_play, (defposx + old_screen_width // 2 - 257, defposy + old_screen_height // 2 - 320))
                 if bouton_restart.draw():
                     game_over = 1
                 if bouton_menu.draw():
                     menu_principal = True
-                draw_text("Summary :", font_lilitaone_70, clr_black, screen_width // 2 - 180, screen_height // 2 - 250)
-                draw_text(f"Score: {score}", font_bauhaus_50, clr_black, screen_width // 2 - 100, screen_height // 2 - 110)
-                draw_text(f"Timer: 0{timer // 60}:{timer % 60}", font_bauhaus_50, clr_black, screen_width // 2 - 140, screen_height // 2 + 10)
-                draw_text(f"Meilleur score: {high_score}", font_bauhaus_50, clr_black, screen_width // 2 - 200, screen_height // 2 - 50)
+                draw_text("Summary :", font_lilitaone_70, clr_black, old_screen_width // 2 - 180, old_screen_height // 2 - 250)
+                draw_text(f"Score: {score}", font_bauhaus_50, clr_black, old_screen_width // 2 - 100, old_screen_height // 2 - 110)
+                draw_text(f"Timer: 0{timer // 60}:{timer % 60}", font_bauhaus_50, clr_black, old_screen_width // 2 - 140, old_screen_height // 2 + 10)
+                draw_text(f"Meilleur score: {high_score}", font_bauhaus_50, clr_black, old_screen_width // 2 - 200, old_screen_height // 2 - 50)
 
             if game_over == 1:
                 game_over, vies, timer, score, frequency = reset_level()
@@ -295,6 +301,5 @@ def arakada1_main():
                     game_over = 0
                 if bouton_menu.draw():
                     menu_principal = True
-            
 
         pygame.display.update()

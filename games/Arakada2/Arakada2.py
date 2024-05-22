@@ -8,9 +8,12 @@ def arakada2_main():
     pygame.display.set_caption("Arakada 2")
     clock = pygame.time.Clock()
     fps = 60
-    screen_height = 1000
-    screen_width = 1000
-    screen= pygame.display.set_mode((screen_width, screen_height))
+    old_screen_height = 1000
+    old_screen_width = 1000
+    screen_width, screen_height = pygame.display.Info().current_w, pygame.display.Info().current_h
+    screen= pygame.display.set_mode((0,0),pygame.FULLSCREEN)
+    defposx = (screen_width - old_screen_width) // 2
+    defposy = (screen_height - old_screen_height) // 2
 
 
     clr_wheat = (179,202,245)
@@ -40,7 +43,7 @@ def arakada2_main():
 
     def draw_text(texte, font, couleur, x, y):
         img = font.render(texte, True, couleur)
-        screen.blit(img, (x, y))
+        screen.blit(img, (defposx + x, defposy + y))
 
     def reset_level():
         grp_object.empty()
@@ -48,7 +51,7 @@ def arakada2_main():
         score = 0
         frequency = 40
         timer = 0
-        player.reset(screen_width // 2 - 35, screen_height // 2 - 35)
+        player.reset(old_screen_width // 2 - 35, old_screen_height // 2 - 35)
         game_over = 0
 
         return game_over, vies, timer, score, frequency
@@ -64,8 +67,8 @@ def arakada2_main():
         def __init__(self, x, y, width, height, image):
             self.image = pygame.transform.scale(image, (width, height))
             self.rect = self.image.get_rect()
-            self.rect.x = x
-            self.rect.y = y
+            self.rect.x = defposx + x
+            self.rect.y = defposy + y
             self.clicked = False
 
         def draw(self):
@@ -81,11 +84,11 @@ def arakada2_main():
             return reset_click
 
 
-    bouton_exit = Bouton(screen_width - 105, 15, 90, 50, pygame.image.load("games/Arakada2/sprites/img_bouton_exit.webp"))
-    bouton_start = Bouton(screen_width // 2 - 130, screen_height // 2 - 110, 260, 100, pygame.image.load("games/Arakada2/sprites/img_bouton_start.webp"))
-    bouton_restart = Bouton(screen_width // 2 - 130, screen_height // 2 + 110, 260, 100, pygame.image.load("games/Arakada2/sprites/img_bouton_restart.webp"))
-    bouton_menu = Bouton(screen_width // 2 - 130, screen_height // 2 + 240, 260, 100, pygame.image.load("games/Arakada2/sprites/img_bouton_menu.webp"))
-    bouton_resume = Bouton(screen_width // 2 - 156, screen_height // 2 - 60, 312, 142, pygame.image.load("games/Arakada2/sprites/img_bouton_resume.webp"))
+    bouton_exit = Bouton(old_screen_width - 105, 15, 90, 50, pygame.image.load("games/Arakada2/sprites/img_bouton_exit.webp"))
+    bouton_start = Bouton(old_screen_width // 2 - 130, old_screen_height // 2 - 110, 260, 100, pygame.image.load("games/Arakada2/sprites/img_bouton_start.webp"))
+    bouton_restart = Bouton(old_screen_width // 2 - 130, old_screen_height // 2 + 110, 260, 100, pygame.image.load("games/Arakada2/sprites/img_bouton_restart.webp"))
+    bouton_menu = Bouton(old_screen_width // 2 - 130, old_screen_height // 2 + 240, 260, 100, pygame.image.load("games/Arakada2/sprites/img_bouton_menu.webp"))
+    bouton_resume = Bouton(old_screen_width // 2 - 156, old_screen_height // 2 - 60, 312, 142, pygame.image.load("games/Arakada2/sprites/img_bouton_resume.webp"))
 
 
     class Object(pygame.sprite.Sprite):
@@ -104,37 +107,37 @@ def arakada2_main():
             self.rect = self.image.get_rect()
             self.type = type
             if cote == 0:
-                self.rect.x = screen_width
+                self.rect.x = defposx + old_screen_width
                 if yy > 0:
-                    self.rect.y = random.randint(30, screen_height * 2 // 3)
+                    self.rect.y = random.randint(defposx + 30, defposy + old_screen_height * 2 // 3)
                 elif yy < 0:
-                    self.rect.y = random.randint(screen_height * 2 // 3, screen_height - 30)
+                    self.rect.y = random.randint(defposx + old_screen_height * 2 // 3, defposy + old_screen_height - 30)
                 else:
-                    self.rect.y = random.randint(30, screen_height - 30)
+                    self.rect.y = random.randint(defposx + 30, defposy + old_screen_height - 30)
             if cote == 1:
                 if xx > 0:
-                    self.rect.x = random.randint(30, screen_width * 2 // 3)
+                    self.rect.x = random.randint(defposx + 30, defposy + old_screen_width * 2 // 3)
                 elif xx < 0:
-                    self.rect.x = random.randint(screen_width * 2 // 3, screen_width - 30)
+                    self.rect.x = random.randint(defposx + old_screen_width * 2 // 3, defposy + old_screen_width - 30)
                 else:
-                    self.rect.x = random.randint(30, screen_width - 30)
-                self.rect.y = -100
+                    self.rect.x = random.randint(defposx + 30, defposy + old_screen_width - 30)
+                self.rect.y = -100 + defposy
             if cote == 2:
-                self.rect.x = -100
+                self.rect.x = -100 + defposx
                 if yy > 0:
-                    self.rect.y = random.randint(30, screen_height * 2 // 3)
+                    self.rect.y = random.randint(defposx + 30, defposy + old_screen_height * 2 // 3)
                 elif yy < 0:
-                    self.rect.y = random.randint(screen_height * 2 // 3, screen_height - 30)
+                    self.rect.y = random.randint(defposx + old_screen_height * 2 // 3, defposy + old_screen_height - 30)
                 else:
-                    self.rect.y = random.randint(30, screen_height - 30)
+                    self.rect.y = random.randint(defposx + 30, defposy + old_screen_height - 30)
             if cote == 3:
                 if xx > 0:
-                    self.rect.x = random.randint(30, screen_width * 2 // 3)
+                    self.rect.x = random.randint(defposx + 30, defposy + old_screen_width * 2 // 3)
                 elif xx < 0:
-                    self.rect.x = random.randint(screen_width * 2 // 3, screen_width - 30)
+                    self.rect.x = random.randint(defposx + old_screen_width * 2 // 3, defposy + old_screen_width - 30)
                 else:
-                    self.rect.x = random.randint(30, screen_width - 30)
-                self.rect.y = screen_height
+                    self.rect.x = random.randint(defposx + 30, defposy + old_screen_width - 30)
+                self.rect.y =  defposy + old_screen_height
             vitesse = xx + yy
             if vitesse <= 5:
                 if xx < yy:
@@ -231,17 +234,17 @@ def arakada2_main():
                 self.rect.x += dx
                 self.rect.y += dy
 
-                if player.rect.left < 0:
-                    player.rect.left = 0
+                if player.rect.left < defposx:
+                    player.rect.left = defposx
                     self.vitesse_x = 0
-                if player.rect.right > screen_width:
-                    player.rect.right = screen_width
-                    self.vitesse_x = 0
-                if player.rect.top < 0:
-                    player.rect.top = 0
+                if player.rect.right > defposx + old_screen_width:
+                    player.rect.right = old_screen_width
+                    self.vitesse_x = defposx + old_screen_width
+                if player.rect.top < defposy:
+                    player.rect.top = defposy
                     self.vitesse_y = 0
-                if player.rect.bottom > screen_width:
-                    player.rect.bottom = screen_width
+                if player.rect.bottom > defposy + old_screen_width:
+                    player.rect.bottom = defposy + old_screen_width
                     self.vitesse_y = 0
 
 
@@ -267,7 +270,7 @@ def arakada2_main():
             self.vitesse_y = 0
             self.vitesse_x = 0
 
-    player = Joueur(95, screen_height - 140)
+    player = Joueur(95, old_screen_height - 140)
 
 
     run=True
@@ -281,10 +284,10 @@ def arakada2_main():
         clock.tick(fps)
         if menu_principal == True:
             screen.fill(clr_wheat)
-            draw_text("Arakada n°2", font_lilitaone_70, clr_black, screen_width // 2 - 210, screen_height // 2 - 230)
-            draw_text("Jeu du vaisseau", font_lilitaone_70, clr_black, screen_width // 2 - 260, screen_height // 2 + 30)
-            screen.blit(img_meteorite, (screen_width // 2 + 25, screen_height // 2 + 190))
-            screen.blit(img_joueur, (screen_width // 2 - 175, screen_height // 2 + 190))
+            draw_text("Arakada n°2", font_lilitaone_70, clr_black, old_screen_width // 2 - 210, old_screen_height // 2 - 230)
+            draw_text("Jeu du vaisseau", font_lilitaone_70, clr_black, old_screen_width // 2 - 260, old_screen_height // 2 + 30)
+            screen.blit(img_meteorite, (defposx + old_screen_width // 2 + 25, defposy + old_screen_height // 2 + 190))
+            screen.blit(img_joueur, (defposx + old_screen_width // 2 - 175, defposy + old_screen_height // 2 + 190))
             if bouton_start.draw():
                 menu_principal = False
                 game_over = 1
@@ -302,13 +305,13 @@ def arakada2_main():
                     if timer % 5 == 0:
                         frequency -= 1
 
-                screen.blit(img_background_play, (0,0))
+                screen.blit(img_background_play, (defposx,defposy))
                 if 0 <= timer % 60 < 10:
                     draw_text(f"0{timer // 60}:0{timer % 60}", font_bauhaus_50, clr_white, 10, 20)
                 else:
                     draw_text(f"0{timer // 60}:{timer % 60}", font_bauhaus_50, clr_white, 10, 20)
-                draw_text(f"Fréquence: {40 - frequency}", font_bauhaus_30, clr_white, screen_width - 196, screen_height - 40)
-                draw_text(f"Vitesse: {1 + timer // 20}", font_bauhaus_30, clr_white, screen_width - 148, screen_height - 70)
+                draw_text(f"Fréquence: {40 - frequency}", font_bauhaus_30, clr_white, old_screen_width - 196, old_screen_height - 40)
+                draw_text(f"Vitesse: {1 + timer // 20}", font_bauhaus_30, clr_white, old_screen_width - 148, old_screen_height - 70)
 
                 n = random.randint(0, frequency)
                 if n == 1:
@@ -332,27 +335,39 @@ def arakada2_main():
                 grp_object.update()
                 grp_object.draw(screen)
                 for i in range(vies):
-                    screen.blit(img_coeur_on, (screen_width - 260 + 80 * i, 7))
+                    screen.blit(img_coeur_on, (defposx + old_screen_width - 260 + 80 * i, defposy + 7))
                 for i in range(3 - vies):
-                    screen.blit(img_coeur_off, (screen_width - 100 - 80 * i, 7))
+                    screen.blit(img_coeur_off, (defposx + old_screen_width - 100 - 80 * i, defposy + 7))
+                pygame.draw.rect(screen, clr_wheat, (0, 0, defposx, screen_height))
+                pygame.draw.rect(screen, clr_wheat, (defposx + old_screen_width, 0, defposx, screen_height))
+                pygame.draw.rect(screen, clr_wheat, (0, 0, screen_width, defposy))
+                pygame.draw.rect(screen, clr_wheat, (0, defposy + old_screen_height, screen_width, defposy))
+
+                pygame.draw.rect(screen, (0,0,0), (defposx - 10, defposy, 10, old_screen_height))
+                pygame.draw.rect(screen, (0,0,0), (defposx - 10, defposy - 10, old_screen_width + 20, 10))
+                pygame.draw.rect(screen, (0,0,0), (defposx + old_screen_width, defposy, 10, old_screen_height))
+                pygame.draw.rect(screen, (0,0,0), (defposx - 10, defposy + old_screen_height, old_screen_width + 20, 10))
+
+
                 game_over, vies = player.update(game_over, vies)
+
 
 
             if game_over == -1:
                 if score > high_score:
                     high_score = score
-                screen.blit(img_background_summary, (screen_width // 2 - 257, screen_height // 2 - 320))
+                screen.blit(img_background_summary, (defposx + old_screen_width // 2 - 257, defposy + old_screen_height // 2 - 320))
                 if bouton_restart.draw():
                     game_over = 1
                 if bouton_menu.draw():
                     menu_principal = True
-                draw_text("Summary :", font_lilitaone_70, clr_black, screen_width // 2 - 180, screen_height // 2 - 250)
-                draw_text(f"Score: {score}", font_bauhaus_50, clr_black, screen_width // 2 - 100, screen_height // 2 - 110)
+                draw_text("Summary :", font_lilitaone_70, clr_black, old_screen_width // 2 - 180, old_screen_height // 2 - 250)
+                draw_text(f"Score: {score}", font_bauhaus_50, clr_black, old_screen_width // 2 - 100, old_screen_height // 2 - 110)
                 if 0 < timer % 60 < 10:
-                    draw_text(f"Timer: 0{timer // 60}:0{timer % 60}", font_bauhaus_50, clr_black, screen_width // 2 - 140, screen_height // 2 + 10)
+                    draw_text(f"Timer: 0{timer // 60}:0{timer % 60}", font_bauhaus_50, clr_black, old_screen_width // 2 - 140, old_screen_height // 2 + 10)
                 else:
-                    draw_text(f"Timer: 0{timer // 60}:{timer % 60}", font_bauhaus_50, clr_black, screen_width // 2 - 140, screen_height // 2 + 10)
-                draw_text(f"Meilleur score: {high_score}", font_bauhaus_50, clr_black, screen_width // 2 - 200, screen_height // 2 - 50)
+                    draw_text(f"Timer: 0{timer // 60}:{timer % 60}", font_bauhaus_50, clr_black, old_screen_width // 2 - 140, old_screen_height // 2 + 10)
+                draw_text(f"Meilleur score: {high_score}", font_bauhaus_50, clr_black, old_screen_width // 2 - 200, old_screen_height // 2 - 50)
 
             if game_over == 1:
                 game_over, vies, timer, score, frequency = reset_level()
@@ -362,6 +377,5 @@ def arakada2_main():
                     game_over = 0
                 if bouton_menu.draw():
                     menu_principal = True
-            
 
         pygame.display.update()
